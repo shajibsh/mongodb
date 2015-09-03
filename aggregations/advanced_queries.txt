@@ -1,0 +1,51 @@
+
+
+
+db.posts.aggregate ( [
+{"$unwind": "$comments"},
+{"$group":  {"_id": "$comments.author", "count":{$sum:1}}},
+{"$sort" : {"count":-1}}
+])
+
+
+
+
+
+db.zips.aggregate( [
+{$match:{ state:{$in:["CT", "NJ"]} , pop:{$gt:25000} } },
+{$group:{_id:null, avgpop:{$avg:"$pop"}}}
+] )
+
+
+
+
+db.grades.aggregate( [
+{"$unwind": "$scores"},
+{"$match": {"scores.type" : {"$in" : ["homework","exam"]}}},
+{$group:{_id: {class_id: "$class_id", student_id: "$student_id"}, avgclass:{$avg:"$scores.score"}}},
+{$group:{_id: {class_id: "$_id.class_id"}, avgstudent:{$avg:"$avgclass"}}},
+{$sort : {avgstudent:-1}}
+] )
+
+
+
+
+
+db.zips.aggregate([   
+{"$match":  { $or : [
+{city : {$regex :"0" }},
+{city : {$regex :"1" }},
+{city : {$regex :"2" }},
+{city : {$regex :"3" }},
+{city : {$regex :"4" }},
+{city : {$regex :"5" }},
+{city : {$regex :"6" }},
+{city : {$regex :"7" }},
+{city : {$regex :"8" }},
+{city : {$regex :"9" }}
+] } } ,
+{ "$group" : {_id:null, sum:{"$sum":"$pop"}}}
+])
+
+
+
